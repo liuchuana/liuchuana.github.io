@@ -3,50 +3,54 @@ title: "使用 DNSAPI 来为你的网站配置  HTTPS"
 pubDate: 2021-08-18
 description: "使用acme.sh脚本，申请ssl证书并且自动续期证书时间"
 categories: ["Linux"]
-
 ---
 
-使用acme.sh脚本，申请ssl证书并且自动续期证书时间
-
+使用 acme.sh 脚本，申请 ssl 证书并且自动续期证书时间
 
 ---
 
 ### 1、安装**acme.sh**脚本
 
 安装很简单, 一个命令:
+
 ```
 curl  https://get.acme.sh | sh -s email=my@example.com
 ```
 
-**PS：这里的email填写自己常用的邮箱，直接复制安装的话后续会报错。**
+**PS：这里的 email 填写自己常用的邮箱，直接复制安装的话后续会报错。**
 
 普通用户和 root 用户都可以安装使用.
 安装过程进行了以下几步:
 
-1) 把 acme.sh 安装到你的 **home** 目录下:
+1. 把 acme.sh 安装到你的 **home** 目录下:
 
 ```
     ~/.acme.sh/
 ```
-并创建 一个 bash 的 alias, 方便你的使用:  `alias acme.sh=~/.acme.sh/acme.sh`
 
-2) 自动为你创建 cronjob,  每天 0:00 点自动检测所有的证书, 如果快过期了, 需要更新, 则会自动更新证书.
+并创建 一个 bash 的 alias, 方便你的使用: `alias acme.sh=~/.acme.sh/acme.sh`
+
+2. 自动为你创建 cronjob, 每天 0:00 点自动检测所有的证书, 如果快过期了, 需要更新, 则会自动更新证书.
 
 **安装过程不会污染已有的系统任何功能和文件**, 所有的修改都限制在安装目录中: `~/.acme.sh/`
 
-### 2、使用[阿里云DNSAPI](https://ak-console.aliyun.com/#/accesskey)自动签发证书
+### 2、使用[阿里云 DNSAPI](https://ak-console.aliyun.com/#/accesskey)自动签发证书
 
 首先，您需要登录您的阿里云帐户以获取您的 API 密钥。 https://ak-console.aliyun.com/#/accesskey
 然后设置全局变量
+
 ```
     export Ali_Key="sdfsdfsdfljlbjkljlkjsdfoiwje"
     export Ali_Secret="jlsdflanljkljlfdsaklkjflsa"
 ```
+
 现在让我们颁发证书：
+
 ```
     acme.sh --issue --dns dns_ali -d example.com -d www.example.com
 ```
-Ali_Key和Ali_Secret将被保存`~/.acme.sh/account.conf`，需要时会被重用。
+
+Ali_Key 和 Ali_Secret 将被保存`~/.acme.sh/account.conf`，需要时会被重用。
 
 ### copy/安装证书
 
@@ -54,7 +58,7 @@ Ali_Key和Ali_Secret将被保存`~/.acme.sh/account.conf`，需要时会被重�
 
 注意, 默认生成的证书都放在安装目录下: ~/.acme.sh/, 请不要直接使用此目录下的文件, 例如: 不要直接让 nginx/apache 的配置文件使用这下面的文件. 这里面的文件都是内部使用, 而且目录结构可能会变化.
 
-正确的使用方法是使用 –installcert 命令,并指定目标位置, 然后证书文件会被copy到相应的位置。
+正确的使用方法是使用 –installcert 命令,并指定目标位置, 然后证书文件会被 copy 到相应的位置。
 
 ```
     acme.sh --installcert -d domain.com \
@@ -62,11 +66,13 @@ Ali_Key和Ali_Secret将被保存`~/.acme.sh/account.conf`，需要时会被重�
     --fullchain-file /etc/nginx/ssl/example/cert.pem \
     --reloadcmd "service nginx reload"
 ```
- 
+
 这里用的是 service nginx force-reload, 不是 service nginx reload, 据测试, reload 并不会重新加载证书, 所以用的 force-reload
 
-### nginx配置 
-附带我自己的nginx配置
+### nginx 配置
+
+附带我自己的 nginx 配置
+
 ```
 server {
     listen       80;
@@ -100,4 +106,3 @@ server {
 }
 
 ```
-
