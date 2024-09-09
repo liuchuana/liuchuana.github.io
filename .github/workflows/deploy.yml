@@ -3,29 +3,30 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # 监听 main 分支的变化
+      - main # 当 main 分支有推送时触发部署
   workflow_dispatch: # 允许手动触发
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: "18" # 指定 Node.js 版本
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build the project
-        run: npm run build
+      - name: Build project
+        run: npm run build # 执行构建命令
 
       - name: Deploy to GitHub Pages
-        run: npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # 构建输出目录
