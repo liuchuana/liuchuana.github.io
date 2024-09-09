@@ -10,7 +10,8 @@
     "release": "esno scripts/release.ts",
     "astro": "astro",
     "new-post": "esno scripts/new-post.ts",
-    "update-theme": "./scripts/update-theme.sh"
+    "update-theme": "./scripts/update-theme.sh",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@astrojs/check": "^0.7.0",
