@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"> <head><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.4"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><title>let 还是 var ?</title><meta charset="utf-8"><link rel="canonical" href="https://astro-theme-typography.vercel.app/posts/letorvar/"><meta name="description" content="let 还是 var ?"><meta name="robots" content="index, follow"><meta property="og:title" content="let 还是 var ?"><meta property="og:type" content="article"><meta property="og:image" content="https://astro-theme-typography.vercel.app/placeholder.png"><meta property="og:url" content="https://astro-theme-typography.vercel.app/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="twitter:image:src" content="https://astro-theme-typography.vercel.app/placeholder.png"><meta name="twitter:image:alt" content="let 还是 var ?"><meta name="twitter:creator" content="@moeyua13"><meta name="twitter:site" content="@moeyua13"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="let 还是 var ?"><meta name="twitter:description" content="let 还是 var ?"><link rel="stylesheet" href="/_astro/about.Diw39rl-.css">
+<style>.tk-meta-input{background-color:#fff}.code-container{position:relative}.clipboard-copy{position:absolute;top:.5rem;right:.5rem;width:1.75rem;height:1.75rem;display:flex;justify-content:center;align-items:center;border-radius:.25rem}.clipboard-copy:hover{background-color:#30363d}
+</style><script type="module" src="/_astro/hoisted.CowMVLut.js"></script>
+<script type="module" src="/_astro/page.CPvyyiTs.js"></script></head> <body> <div un-max-lg="animate-fadein-down" un-lg="flex flex-row-reverse justify-between gap-4 px-8 mx-auto max-w-6xl" class="container contain-layout m-a"> <div un-lg="sticky top-0 h-screen py-20 animate-fadein-left gap-8" un-lg:flex="~ col justify-between items-start gap-4" class="p-7.5"> <header un-lg="grow-1 justify-between items-start" un-flex="~ col gap-2.5" class="text-center"> <hgroup un-hover:lg="bg-foreground color-background pt-3.75 pb-8.75 " un-lg=" write-vertical-right items-start px-2.5 pb-12 b-l-2px b-l-foreground-solid text-left" un-flex="~ col gap-2.5" class="cursor-pointer transition-[padding,background] duration-800 ease-in-out"> <a class="normal" href="/"> <h3 class="text-5 font-extrabold font-serif">Rice Balls</h3> <h1 class="text-8 font-extrabold font-serif">芝士饭团</h1> </a> </hgroup> <nav class="text-center font-bold" un-flex="~ col gap-2"> <ul un-lg="flex-col items-start text-4" class="text-3.5" un-flex="~ row gap-2 justify-center"> <li> <a href="/posts/page/1">文章</a> </li><li> <a href="/archive">归档</a> </li><li> <a href="/categories">分类</a> </li><li> <a href="/about">关于</a> </li> </ul> <ul un-flex="~ row gap-1 justify-center"> <li> <a href="https://github.com/liuchuana" target="_blank" title="github" class="icon i-mdi-github"></a> </li><li> <a href="/atom.xml" target="_blank" title="rss" class="icon i-mdi-rss"></a> </li> </ul> </nav> </header> <footer font-bold text-3 un-flex="~ col gap-1" un-lg="gap-3.5" class="max-lg:hidden"> <p>
+© 2024 <a target="_blank" href="https://astro-theme-typography.vercel.app/" rel="noopener noreferrer">Rice Balls</a> </p> <p>
+Theme
+<a target="_blank" href="https://github.com/Moeyua/astro-theme-typography" rel="noopener noreferrer">Typography</a>
+by <a target="_blank" href="https://moeyua.com" rel="noopener noreferrer">Moeyua</a> </p> <p>
+Proudly published with
+<a target="_blank" href="https://astro.build" rel="noopener noreferrer">Astro</a> </p> </footer> </div> <main un-lg="py-20 min-w-xl animate-fadein-down" class="p-7.5">  <article class="heti"> <header> <h1 class="post-title!"> <a href="/posts/letorvar/">let 还是 var ?</a> </h1> <div class="mt-2 text-3.5"> <span>发布于</span> <time>2021-04-01</time> <a class="ml-2.5" href="/categories/Javascript">
+# Javascript </a> </div> </header>  <p>es6 的 let 和我们之前一直使用的 var 到底有什么不同呢？</p>
+<!--more-->
+<hr>
+<p>let 为 ES6 新增的用来声明变量的命令，那么是否可以用 let 来全面替代 var 呢。我个人认为是可以的，而且在不考虑兼容方面的一些环境因素下我个人是极力推荐的。以下我就说说 let 的特点和一些与 var 的区别。</p>
+<h3 id="let-不会被提前注册">let 不会被提前注册</h3>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#E5C07B">console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#98C379">`var_a:`</span><span style="color:#ABB2BF">, </span><span style="color:#E06C75">var_a</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">//结果 → var_a: undefined</span></span>
+<span class="line"><span style="color:#E5C07B">console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#98C379">`let_a`</span><span style="color:#ABB2BF">, </span><span style="color:#E06C75">let_a</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">//结果直接报错 → let_a is not defined</span></span>
+<span class="line"><span style="color:#C678DD">var</span><span style="color:#E06C75"> var_a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#C678DD">let</span><span style="color:#E06C75"> let_a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"></span></code></pre>
+<p>var 声明的变量在页面解析时会被提前声明但并未赋值，所以打印出来为 undefind，但是 let 不会被提前声明直接报错。</p>
+<h3 id="let-的块级作用域">let 的块级作用域</h3>
+<p>在 let 未出世之前 js 只有函数作用域和全局作用域缺乏灵活性例如</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#ABB2BF">{</span></span>
+<span class="line"><span style="color:#C678DD">  var</span><span style="color:#E06C75"> i</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#ABB2BF">}</span></span>
+<span class="line"><span style="color:#E5C07B">console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">i</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">// 1</span></span>
+<span class="line"></span></code></pre>
+<p>换成 es6 的 let 在 <strong>{}</strong> 中的都是 let 的块级作用域范围</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#ABB2BF">{</span></span>
+<span class="line"><span style="color:#C678DD">  let</span><span style="color:#E06C75"> i</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#E5C07B">  console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">i</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">// 1</span></span>
+<span class="line"><span style="color:#ABB2BF">}</span></span>
+<span class="line"><span style="color:#E5C07B">console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">i</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">// i is not defined</span></span>
+<span class="line"></span></code></pre>
+<p>也许你觉得在正常书写代码的时候无伤大雅，但是在一些时候你会觉得 let 简直是天使。</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#C678DD">for</span><span style="color:#ABB2BF"> (</span><span style="color:#C678DD">var</span><span style="color:#E06C75"> i</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 0</span><span style="color:#ABB2BF">; </span><span style="color:#E06C75">i</span><span style="color:#56B6C2"> &#x3C;</span><span style="color:#D19A66"> 10</span><span style="color:#ABB2BF">; </span><span style="color:#E06C75">i</span><span style="color:#56B6C2">++</span><span style="color:#ABB2BF">) {</span></span>
+<span class="line"><span style="color:#61AFEF">  setTimeout</span><span style="color:#ABB2BF">(() </span><span style="color:#C678DD">=></span><span style="color:#ABB2BF"> {</span></span>
+<span class="line"><span style="color:#E5C07B">    console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">i</span><span style="color:#ABB2BF">);</span></span>
+<span class="line"><span style="color:#ABB2BF">  });</span></span>
+<span class="line"><span style="color:#ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#7F848E;font-style:italic">// 10 10 10 10 10 10 10 10 10 10</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#C678DD">for</span><span style="color:#ABB2BF"> (</span><span style="color:#C678DD">let</span><span style="color:#E06C75"> i</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 0</span><span style="color:#ABB2BF">; </span><span style="color:#E06C75">i</span><span style="color:#56B6C2"> &#x3C;</span><span style="color:#D19A66"> 10</span><span style="color:#ABB2BF">; </span><span style="color:#E06C75">i</span><span style="color:#56B6C2">++</span><span style="color:#ABB2BF">) {</span></span>
+<span class="line"><span style="color:#61AFEF">  setTimeout</span><span style="color:#ABB2BF">(() </span><span style="color:#C678DD">=></span><span style="color:#ABB2BF"> {</span></span>
+<span class="line"><span style="color:#E5C07B">    console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">i</span><span style="color:#ABB2BF">);</span></span>
+<span class="line"><span style="color:#ABB2BF">  });</span></span>
+<span class="line"><span style="color:#ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#7F848E;font-style:italic">// 0 1 2 3 4 5 6 7 8 9</span></span>
+<span class="line"></span></code></pre>
+<p>看到上面的两段代码比较是不是感觉 let 还是很好用的呢。每次 for 循环的块级作用域都是不同的所以在每次循环中 let 声明的变量也是独一无二的不受外界影响。</p>
+<h3 id="let-不可以重复声明">let 不可以重复声明</h3>
+<p>var 允许被多次声明覆盖这导致可能会出现维护大型代码的时候大意变量重名的现象，而且可覆盖导致出现各种 bug。</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#C678DD">var</span><span style="color:#E06C75"> a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#C678DD">var</span><span style="color:#E06C75"> a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 2</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#E5C07B">console</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">log</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">a</span><span style="color:#ABB2BF">); </span><span style="color:#7F848E;font-style:italic">//2</span></span>
+<span class="line"></span></code></pre>
+<p>但是在 let 中重复声明是不被允许的，你敢重复声明变量，它就敢跟你报错</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#C678DD">let</span><span style="color:#E06C75"> a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 1</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#C678DD">let</span><span style="color:#E06C75"> a</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 2</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"><span style="color:#7F848E;font-style:italic">//报错 Identifier 'a' has already been declared</span></span>
+<span class="line"></span></code></pre>  </article> <footer class="mt-5">  <p class="flex items-center gap-2"> <span class="inline-flex items-center"> <i class="i-mdi-chevron-double-left icon"></i> <a href="/posts/使用-dnsapi-来为你的网站配置--https">上一篇: 使用 DNSAPI 来为你的网站配置  HTTPS</a> </span> <span class="inline-flex items-center"> <a href="/posts/js数组的四种循环">下一篇: JS数组的四种循环</a> <i class="i-mdi-chevron-double-right icon"></i> </span> </p> </footer> <!-- <footer class="mt-5">
+  <p class="mb-2.5">{t('page_number', page.currentPage)} / {t('page_count', page.lastPage)}</p>
+  <p class="flex items-center gap-2">
+    <span class="inline-flex items-center">
+      <i class="i-mdi-chevron-double-left icon"></i>
+      {page.url.prev ? <a href={page.url.prev}> {t('prev')} </a> : <span>{t('prev')}</span>}
+    </span>
+
+    <span class="inline-flex items-center">
+      {page.url.next ? <a href={page.url.next}>{t('next')}</a> : <span>{t('next')}</span>}
+      <i class="i-mdi-chevron-double-right icon"></i>
+    </span>
+  </p>
+</footer> -->  <div py-16> <div id="disqus_thread"></div> <script>(function(){const shortname = "liuchuana";
+const identifier = "letorvar.md";
+const url = "https://astro-theme-typography.vercel.app//posts/letorvar";
+const title = "let 还是 var ?";
+
+  var disqus_config = function () {
+    this.page.url = url
+    this.page.identifier = identifier
+    this.page.title = title
+  }
+
+  ;(function () {
+    var d = document,
+      s = d.createElement('script')
+    s.src = 'https://' + shortname + '.disqus.com/embed.js'
+    s.setAttribute('data-timestamp', new Date().toString())
+    ;(d.head || d.body).appendChild(s)
+  })()
+})();</script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>    </div>  </main> <footer font-bold text-3 un-flex="~ col gap-1" un-lg="gap-3.5" class="lg:hidden p-7.5"> <p>
+© 2024 <a target="_blank" href="https://astro-theme-typography.vercel.app/" rel="noopener noreferrer">Rice Balls</a> </p> <p>
+Theme
+<a target="_blank" href="https://github.com/Moeyua/astro-theme-typography" rel="noopener noreferrer">Typography</a>
+by <a target="_blank" href="https://moeyua.com" rel="noopener noreferrer">Moeyua</a> </p> <p>
+Proudly published with
+<a target="_blank" href="https://astro.build" rel="noopener noreferrer">Astro</a> </p> </footer> </div> </body></html>  

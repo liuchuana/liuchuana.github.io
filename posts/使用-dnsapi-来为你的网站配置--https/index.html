@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"> <head><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.4"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><title>使用 DNSAPI 来为你的网站配置  HTTPS</title><meta charset="utf-8"><link rel="canonical" href="https://astro-theme-typography.vercel.app/posts/%E4%BD%BF%E7%94%A8-dnsapi-%E6%9D%A5%E4%B8%BA%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E9%85%8D%E7%BD%AE--https/"><meta name="description" content="使用acme.sh脚本，申请ssl证书并且自动续期证书时间"><meta name="robots" content="index, follow"><meta property="og:title" content="使用 DNSAPI 来为你的网站配置  HTTPS"><meta property="og:type" content="article"><meta property="og:image" content="https://astro-theme-typography.vercel.app/placeholder.png"><meta property="og:url" content="https://astro-theme-typography.vercel.app/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="twitter:image:src" content="https://astro-theme-typography.vercel.app/placeholder.png"><meta name="twitter:image:alt" content="使用acme.sh脚本，申请ssl证书并且自动续期证书时间"><meta name="twitter:creator" content="@moeyua13"><meta name="twitter:site" content="@moeyua13"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="使用 DNSAPI 来为你的网站配置  HTTPS"><meta name="twitter:description" content="使用acme.sh脚本，申请ssl证书并且自动续期证书时间"><link rel="stylesheet" href="/_astro/about.Diw39rl-.css">
+<style>.tk-meta-input{background-color:#fff}.code-container{position:relative}.clipboard-copy{position:absolute;top:.5rem;right:.5rem;width:1.75rem;height:1.75rem;display:flex;justify-content:center;align-items:center;border-radius:.25rem}.clipboard-copy:hover{background-color:#30363d}
+</style><script type="module" src="/_astro/hoisted.CowMVLut.js"></script>
+<script type="module" src="/_astro/page.CPvyyiTs.js"></script></head> <body> <div un-max-lg="animate-fadein-down" un-lg="flex flex-row-reverse justify-between gap-4 px-8 mx-auto max-w-6xl" class="container contain-layout m-a"> <div un-lg="sticky top-0 h-screen py-20 animate-fadein-left gap-8" un-lg:flex="~ col justify-between items-start gap-4" class="p-7.5"> <header un-lg="grow-1 justify-between items-start" un-flex="~ col gap-2.5" class="text-center"> <hgroup un-hover:lg="bg-foreground color-background pt-3.75 pb-8.75 " un-lg=" write-vertical-right items-start px-2.5 pb-12 b-l-2px b-l-foreground-solid text-left" un-flex="~ col gap-2.5" class="cursor-pointer transition-[padding,background] duration-800 ease-in-out"> <a class="normal" href="/"> <h3 class="text-5 font-extrabold font-serif">Rice Balls</h3> <h1 class="text-8 font-extrabold font-serif">芝士饭团</h1> </a> </hgroup> <nav class="text-center font-bold" un-flex="~ col gap-2"> <ul un-lg="flex-col items-start text-4" class="text-3.5" un-flex="~ row gap-2 justify-center"> <li> <a href="/posts/page/1">文章</a> </li><li> <a href="/archive">归档</a> </li><li> <a href="/categories">分类</a> </li><li> <a href="/about">关于</a> </li> </ul> <ul un-flex="~ row gap-1 justify-center"> <li> <a href="https://github.com/liuchuana" target="_blank" title="github" class="icon i-mdi-github"></a> </li><li> <a href="/atom.xml" target="_blank" title="rss" class="icon i-mdi-rss"></a> </li> </ul> </nav> </header> <footer font-bold text-3 un-flex="~ col gap-1" un-lg="gap-3.5" class="max-lg:hidden"> <p>
+© 2024 <a target="_blank" href="https://astro-theme-typography.vercel.app/" rel="noopener noreferrer">Rice Balls</a> </p> <p>
+Theme
+<a target="_blank" href="https://github.com/Moeyua/astro-theme-typography" rel="noopener noreferrer">Typography</a>
+by <a target="_blank" href="https://moeyua.com" rel="noopener noreferrer">Moeyua</a> </p> <p>
+Proudly published with
+<a target="_blank" href="https://astro.build" rel="noopener noreferrer">Astro</a> </p> </footer> </div> <main un-lg="py-20 min-w-xl animate-fadein-down" class="p-7.5">  <article class="heti"> <header> <h1 class="post-title!"> <a href="/posts/使用-dnsapi-来为你的网站配置--https/">使用 DNSAPI 来为你的网站配置  HTTPS</a> </h1> <div class="mt-2 text-3.5"> <span>发布于</span> <time>2021-08-18</time> <a class="ml-2.5" href="/categories/Linux">
+# Linux </a> </div> </header>  <p>使用 acme.sh 脚本，申请 ssl 证书并且自动续期证书时间</p>
+<hr>
+<h3 id="1安装acmesh脚本">1、安装<strong>acme.sh</strong>脚本</h3>
+<p>安装很简单, 一个命令:</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>curl  https://get.acme.sh | sh -s email=my@example.com</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>PS：这里的 email 填写自己常用的邮箱，直接复制安装的话后续会报错。</strong></p>
+<p>普通用户和 root 用户都可以安装使用.
+安装过程进行了以下几步:</p>
+<ol>
+<li>把 acme.sh 安装到你的 <strong>home</strong> 目录下:</li>
+</ol>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    ~/.acme.sh/</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>并创建 一个 bash 的 alias, 方便你的使用: <code>alias acme.sh=~/.acme.sh/acme.sh</code></p>
+<ol start="2">
+<li>自动为你创建 cronjob, 每天 0:00 点自动检测所有的证书, 如果快过期了, 需要更新, 则会自动更新证书.</li>
+</ol>
+<p><strong>安装过程不会污染已有的系统任何功能和文件</strong>, 所有的修改都限制在安装目录中: <code>~/.acme.sh/</code></p>
+<h3 id="2使用阿里云-dnsapi自动签发证书">2、使用<a href="https://ak-console.aliyun.com/#/accesskey">阿里云 DNSAPI</a>自动签发证书</h3>
+<p>首先，您需要登录您的阿里云帐户以获取您的 API 密钥。 <a href="https://ak-console.aliyun.com/#/accesskey">https://ak-console.aliyun.com/#/accesskey</a>
+然后设置全局变量</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    export Ali_Key="sdfsdfsdfljlbjkljlkjsdfoiwje"</span></span>
+<span class="line"><span>    export Ali_Secret="jlsdflanljkljlfdsaklkjflsa"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>现在让我们颁发证书：</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    acme.sh --issue --dns dns_ali -d example.com -d www.example.com</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Ali_Key 和 Ali_Secret 将被保存<code>~/.acme.sh/account.conf</code>，需要时会被重用。</p>
+<h3 id="copy安装证书">copy/安装证书</h3>
+<p>前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方.</p>
+<p>注意, 默认生成的证书都放在安装目录下: ~/.acme.sh/, 请不要直接使用此目录下的文件, 例如: 不要直接让 nginx/apache 的配置文件使用这下面的文件. 这里面的文件都是内部使用, 而且目录结构可能会变化.</p>
+<p>正确的使用方法是使用 –installcert 命令,并指定目标位置, 然后证书文件会被 copy 到相应的位置。</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    acme.sh --installcert -d domain.com \</span></span>
+<span class="line"><span>    --key-file /etc/nginx/ssl/example/key.pem \</span></span>
+<span class="line"><span>    --fullchain-file /etc/nginx/ssl/example/cert.pem \</span></span>
+<span class="line"><span>    --reloadcmd "service nginx reload"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>这里用的是 service nginx force-reload, 不是 service nginx reload, 据测试, reload 并不会重新加载证书, 所以用的 force-reload</p>
+<h3 id="nginx-配置">nginx 配置</h3>
+<p>附带我自己的 nginx 配置</p>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>server {</span></span>
+<span class="line"><span>    listen       80;</span></span>
+<span class="line"><span>    server_name  example.com www.example.com;</span></span>
+<span class="line"><span>    #http访问重定向至https</span></span>
+<span class="line"><span>    rewrite ^ https://$http_host$request_uri? permanent;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>server {</span></span>
+<span class="line"><span>        listen 443 ssl;</span></span>
+<span class="line"><span>        ssl_certificate /etc/nginx/ssl/example/cert.pem;</span></span>
+<span class="line"><span>        ssl_certificate_key /etc/nginx/ssl/example/key.pem;</span></span>
+<span class="line"><span>         keepalive_timeout   70;</span></span>
+<span class="line"><span>        server_name www.example.com example.com;</span></span>
+<span class="line"><span>        #禁止在header中出现服务器版本，防止黑客利用版本漏洞攻击</span></span>
+<span class="line"><span>        server_tokens off;</span></span>
+<span class="line"><span>        #如果是全站 HTTPS 并且不考虑 HTTP 的话，</span></span>
+<span class="line"><span>        #可以加入 HSTS 告诉你的浏览器本网站全站加密，并且强制用 HTTPS 访问</span></span>
+<span class="line"><span>        #add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";</span></span>
+<span class="line"><span>        fastcgi_param   HTTPS               on;</span></span>
+<span class="line"><span>        fastcgi_param   HTTP_SCHEME         https;</span></span>
+<span class="line"><span>        access_log      /var/log/nginx/wiki.xby1993.net.access.log;</span></span>
+<span class="line"><span>        error_log       /var/log/nginx/wiki.xby1993.net.error.log;</span></span>
+<span class="line"><span>        location / {</span></span>
+<span class="line"><span>                proxy_set_header Host $http_host;</span></span>
+<span class="line"><span>                proxy_set_header X-Real-IP $remote_addr;</span></span>
+<span class="line"><span>                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span></span>
+<span class="line"><span>                proxy_set_header X-Forwarded-Proto $scheme;</span></span>
+<span class="line"><span>                proxy_pass         http://127.0.0.1:2368;</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span></code></pre>  </article> <footer class="mt-5">  <p class="flex items-center gap-2">  <span class="inline-flex items-center"> <a href="/posts/letorvar">下一篇: let 还是 var ?</a> <i class="i-mdi-chevron-double-right icon"></i> </span> </p> </footer> <!-- <footer class="mt-5">
+  <p class="mb-2.5">{t('page_number', page.currentPage)} / {t('page_count', page.lastPage)}</p>
+  <p class="flex items-center gap-2">
+    <span class="inline-flex items-center">
+      <i class="i-mdi-chevron-double-left icon"></i>
+      {page.url.prev ? <a href={page.url.prev}> {t('prev')} </a> : <span>{t('prev')}</span>}
+    </span>
+
+    <span class="inline-flex items-center">
+      {page.url.next ? <a href={page.url.next}>{t('next')}</a> : <span>{t('next')}</span>}
+      <i class="i-mdi-chevron-double-right icon"></i>
+    </span>
+  </p>
+</footer> -->  <div py-16> <div id="disqus_thread"></div> <script>(function(){const shortname = "liuchuana";
+const identifier = "使用 DNSAPI 来为你的网站配置  HTTPS.md";
+const url = "https://astro-theme-typography.vercel.app//posts/使用-dnsapi-来为你的网站配置--https";
+const title = "使用 DNSAPI 来为你的网站配置  HTTPS";
+
+  var disqus_config = function () {
+    this.page.url = url
+    this.page.identifier = identifier
+    this.page.title = title
+  }
+
+  ;(function () {
+    var d = document,
+      s = d.createElement('script')
+    s.src = 'https://' + shortname + '.disqus.com/embed.js'
+    s.setAttribute('data-timestamp', new Date().toString())
+    ;(d.head || d.body).appendChild(s)
+  })()
+})();</script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>    </div>  </main> <footer font-bold text-3 un-flex="~ col gap-1" un-lg="gap-3.5" class="lg:hidden p-7.5"> <p>
+© 2024 <a target="_blank" href="https://astro-theme-typography.vercel.app/" rel="noopener noreferrer">Rice Balls</a> </p> <p>
+Theme
+<a target="_blank" href="https://github.com/Moeyua/astro-theme-typography" rel="noopener noreferrer">Typography</a>
+by <a target="_blank" href="https://moeyua.com" rel="noopener noreferrer">Moeyua</a> </p> <p>
+Proudly published with
+<a target="_blank" href="https://astro.build" rel="noopener noreferrer">Astro</a> </p> </footer> </div> </body></html>  

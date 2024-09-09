@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>芝士饭团</title><description>Rediscory the beauty of typography</description><link>https://astro-theme-typography.vercel.app/</link><item><title>使用 DNSAPI 来为你的网站配置  HTTPS</title><link>https://astro-theme-typography.vercel.app/posts/%E4%BD%BF%E7%94%A8-dnsapi-%E6%9D%A5%E4%B8%BA%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E9%85%8D%E7%BD%AE--https/</link><guid isPermaLink="true">https://astro-theme-typography.vercel.app/posts/%E4%BD%BF%E7%94%A8-dnsapi-%E6%9D%A5%E4%B8%BA%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E9%85%8D%E7%BD%AE--https/</guid><description>使用acme.sh脚本，申请ssl证书并且自动续期证书时间</description><pubDate>Wed, 18 Aug 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;使用 acme.sh 脚本，申请 ssl 证书并且自动续期证书时间&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;1、安装&lt;strong&gt;acme.sh&lt;/strong&gt;脚本&lt;/h3&gt;
+&lt;p&gt;安装很简单, 一个命令:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl  https://get.acme.sh | sh -s email=my@example.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;PS：这里的 email 填写自己常用的邮箱，直接复制安装的话后续会报错。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;普通用户和 root 用户都可以安装使用.
+安装过程进行了以下几步:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;把 acme.sh 安装到你的 &lt;strong&gt;home&lt;/strong&gt; 目录下:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;    ~/.acme.sh/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;并创建 一个 bash 的 alias, 方便你的使用: &lt;code&gt;alias acme.sh=~/.acme.sh/acme.sh&lt;/code&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;自动为你创建 cronjob, 每天 0:00 点自动检测所有的证书, 如果快过期了, 需要更新, 则会自动更新证书.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;安装过程不会污染已有的系统任何功能和文件&lt;/strong&gt;, 所有的修改都限制在安装目录中: &lt;code&gt;~/.acme.sh/&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;2、使用&lt;a href=&quot;https://ak-console.aliyun.com/#/accesskey&quot;&gt;阿里云 DNSAPI&lt;/a&gt;自动签发证书&lt;/h3&gt;
+&lt;p&gt;首先，您需要登录您的阿里云帐户以获取您的 API 密钥。 https://ak-console.aliyun.com/#/accesskey
+然后设置全局变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    export Ali_Key=&quot;sdfsdfsdfljlbjkljlkjsdfoiwje&quot;
+    export Ali_Secret=&quot;jlsdflanljkljlfdsaklkjflsa&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在让我们颁发证书：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    acme.sh --issue --dns dns_ali -d example.com -d www.example.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ali_Key 和 Ali_Secret 将被保存&lt;code&gt;~/.acme.sh/account.conf&lt;/code&gt;，需要时会被重用。&lt;/p&gt;
+&lt;h3&gt;copy/安装证书&lt;/h3&gt;
+&lt;p&gt;前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方.&lt;/p&gt;
+&lt;p&gt;注意, 默认生成的证书都放在安装目录下: ~/.acme.sh/, 请不要直接使用此目录下的文件, 例如: 不要直接让 nginx/apache 的配置文件使用这下面的文件. 这里面的文件都是内部使用, 而且目录结构可能会变化.&lt;/p&gt;
+&lt;p&gt;正确的使用方法是使用 –installcert 命令,并指定目标位置, 然后证书文件会被 copy 到相应的位置。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    acme.sh --installcert -d domain.com \
+    --key-file /etc/nginx/ssl/example/key.pem \
+    --fullchain-file /etc/nginx/ssl/example/cert.pem \
+    --reloadcmd &quot;service nginx reload&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里用的是 service nginx force-reload, 不是 service nginx reload, 据测试, reload 并不会重新加载证书, 所以用的 force-reload&lt;/p&gt;
+&lt;h3&gt;nginx 配置&lt;/h3&gt;
+&lt;p&gt;附带我自己的 nginx 配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen       80;
+    server_name  example.com www.example.com;
+    #http访问重定向至https
+    rewrite ^ https://$http_host$request_uri? permanent;
+}
+
+server {
+        listen 443 ssl;
+        ssl_certificate /etc/nginx/ssl/example/cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/example/key.pem;
+         keepalive_timeout   70;
+        server_name www.example.com example.com;
+        #禁止在header中出现服务器版本，防止黑客利用版本漏洞攻击
+        server_tokens off;
+        #如果是全站 HTTPS 并且不考虑 HTTP 的话，
+        #可以加入 HSTS 告诉你的浏览器本网站全站加密，并且强制用 HTTPS 访问
+        #add_header Strict-Transport-Security &quot;max-age=31536000; includeSubdomains&quot;;
+        fastcgi_param   HTTPS               on;
+        fastcgi_param   HTTP_SCHEME         https;
+        access_log      /var/log/nginx/wiki.xby1993.net.access.log;
+        error_log       /var/log/nginx/wiki.xby1993.net.error.log;
+        location / {
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_pass         http://127.0.0.1:2368;
+        }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded><category>Linux</category><author>Rice Balls</author></item><item><title>let 还是 var ?</title><link>https://astro-theme-typography.vercel.app/posts/letorvar/</link><guid isPermaLink="true">https://astro-theme-typography.vercel.app/posts/letorvar/</guid><description>let 还是 var ?</description><pubDate>Thu, 01 Apr 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;es6 的 let 和我们之前一直使用的 var 到底有什么不同呢？&lt;/p&gt;
+&lt;p&gt;&amp;lt;!--more--&amp;gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;let 为 ES6 新增的用来声明变量的命令，那么是否可以用 let 来全面替代 var 呢。我个人认为是可以的，而且在不考虑兼容方面的一些环境因素下我个人是极力推荐的。以下我就说说 let 的特点和一些与 var 的区别。&lt;/p&gt;
+&lt;h3&gt;let 不会被提前注册&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;console.log(`var_a:`, var_a); //结果 → var_a: undefined
+console.log(`let_a`, let_a); //结果直接报错 → let_a is not defined
+var var_a = 1;
+let let_a = 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;var 声明的变量在页面解析时会被提前声明但并未赋值，所以打印出来为 undefind，但是 let 不会被提前声明直接报错。&lt;/p&gt;
+&lt;h3&gt;let 的块级作用域&lt;/h3&gt;
+&lt;p&gt;在 let 未出世之前 js 只有函数作用域和全局作用域缺乏灵活性例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  var i = 1;
+}
+console.log(i); // 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;换成 es6 的 let 在 &lt;strong&gt;{}&lt;/strong&gt; 中的都是 let 的块级作用域范围&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  let i = 1;
+  console.log(i); // 1
+}
+console.log(i); // i is not defined
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也许你觉得在正常书写代码的时候无伤大雅，但是在一些时候你会觉得 let 简直是天使。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for (var i = 0; i &amp;lt; 10; i++) {
+  setTimeout(() =&amp;gt; {
+    console.log(i);
+  });
+}
+
+// 10 10 10 10 10 10 10 10 10 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;for (let i = 0; i &amp;lt; 10; i++) {
+  setTimeout(() =&amp;gt; {
+    console.log(i);
+  });
+}
+
+// 0 1 2 3 4 5 6 7 8 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看到上面的两段代码比较是不是感觉 let 还是很好用的呢。每次 for 循环的块级作用域都是不同的所以在每次循环中 let 声明的变量也是独一无二的不受外界影响。&lt;/p&gt;
+&lt;h3&gt;let 不可以重复声明&lt;/h3&gt;
+&lt;p&gt;var 允许被多次声明覆盖这导致可能会出现维护大型代码的时候大意变量重名的现象，而且可覆盖导致出现各种 bug。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var a = 1;
+var a = 2;
+console.log(a); //2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是在 let 中重复声明是不被允许的，你敢重复声明变量，它就敢跟你报错&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let a = 1;
+let a = 2;
+//报错 Identifier &apos;a&apos; has already been declared
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded><category>Javascript</category><author>Rice Balls</author></item><item><title>JS数组的四种循环</title><link>https://astro-theme-typography.vercel.app/posts/js%E6%95%B0%E7%BB%84%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BE%AA%E7%8E%AF/</link><guid isPermaLink="true">https://astro-theme-typography.vercel.app/posts/js%E6%95%B0%E7%BB%84%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BE%AA%E7%8E%AF/</guid><description>js数组的四种循环：forEach、map、filter和reduce</description><pubDate>Fri, 26 Mar 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;js 数组的四种循环：forEach、map、filter 和 reduce&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;forEach&lt;/h3&gt;
+&lt;p&gt;forEach 没有返回值。我们在回调函数中直接修改 arr 的值。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let arr = [1, 2, 3, 4, 5];
+let result = arr.forEach((item, index) =&amp;gt; {
+  return (arr[index] = item * 2);
+});
+console.log(result);
+console.log(arr);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行返回结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;undefined
+[2, 4, 6, 8, 10]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;map&lt;/h3&gt;
+&lt;p&gt;map 会返回一个新的数组，并且执行的效率会比 forEach 高&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let arr = [1, 2, 3, 4, 5];
+let result = arr.map((item, index) =&amp;gt; {
+  return item * 2;
+});
+console.log(result);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行返回结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[2, 4, 6, 8, 10]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;filter&lt;/h3&gt;
+&lt;p&gt;filter 会在循环中&lt;code&gt;return true || false&lt;/code&gt;来生成我们想要的新数组，&lt;strong&gt;没有 return 默认为 false&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let arr = [1, 2, 3, 4, 5];
+let result = arr.filter((item, index) =&amp;gt; {
+  return item &amp;gt; 3
+});
+console.log(result);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行返回结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[4, 5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;reduce&lt;/h3&gt;
+&lt;p&gt;reduce 循环也有两个参数，两个参数分别代表上一次&lt;code&gt;return&lt;/code&gt;的结果和数组的当前值。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let arr = [1, 2, 3, 4, 5];
+let result = arr.reduce((pre, cur) =&amp;gt; {
+    console.log(pre,cur);
+    return pre + cur;
+});
+console.log(`result：`, result)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行返回结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1 2
+3 3
+6 4
+10 5
+result 15
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded><category>Javascript</category><author>Rice Balls</author></item></channel></rss>
